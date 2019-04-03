@@ -73,13 +73,12 @@ global.monitor.bn.node(3, chds.num.pa.combo,alpha=3)
 global.monitor.bn.node(4, chds.num.pa.combo,alpha=2)
 global.monitor.bn.node(1, chds.num.pa.combo,alpha=2)
 
-sum(map_dbl(1:num.nodes,~global.monitor.bn.node(.x,num.pa.combo,alpha=3)))#global monitor
+map(1:num.nodes,~global.monitor.bn.node(.x,num.pa.combo,alpha=3))#global monitor
 
 #think of how to visualize this in shiny 
 
 #worked example with a model of the class BN fit
 dag.gs <- chds.gs
-
 chds.gs.nodes <-nodes(chds.gs)
 
 num.ch.gs <- map(chds.gs, `[[`, "children")  %>% map_int(length)
@@ -99,14 +98,19 @@ global.monitor.bn.node.gs <- function(i,num.pa.combo,alpha){#j is the index of t
   pa.names <-c(unlist(chds.gs.pa.val[i] ), colnames(df)[i])
   df %>% count(!!!(syms(pa.names))) %>% complete %>% pull(n) ->> counts.vec
   map_dbl(1:num.pa.combo[i], ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec #TODO misfiring because of global variables
-  score <- sum(scores.vec)
-  return(list(score,scores.vec))#returns global and pach monitor  
+  score <- unlist(sum(scores.vec))
+  return(list(score))#returns global and pach monitor  
 }  
 
-global.monitor.bn.node(3, chds.num.pa.combo,alpha=3)#as a comparison for the elicited model
+global.monitor.bn.node(2, chds.num.pa.combo,alpha=3)#as a comparison for the elicited model
+global.monitor.bn.node.gs(1, chds.gs.num.pa.combo,alpha=3)#the grow shrink algorithm model
+global.monitor.bn.node.gs(2, chds.gs.num.pa.combo,alpha=3)#the grow shrink algorithm model
 global.monitor.bn.node.gs(3, chds.gs.num.pa.combo,alpha=3)#the grow shrink algorithm model
+global.monitor.bn.node.gs(4, chds.gs.num.pa.combo,alpha=3)#the grow shrink algorithm model
 
 
-#node monitor 
+map(1:num.nodes,~global.monitor.bn.node.gs(.x,chds.gs.num.pa.combo,alpha=3))#global monitor
+
+mapply(function, ...)#node monitor 
 
 
