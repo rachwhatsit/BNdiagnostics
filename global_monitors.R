@@ -111,6 +111,4 @@ global.monitor.bn.node.gs(4, chds.gs.num.pa.combo,alpha=3)#the grow shrink algor
 
 map(1:num.nodes,~global.monitor.bn.node.gs(.x,chds.gs.num.pa.combo,alpha=3))#global monitor
 
-mapply(function, ...)#node monitor 
-
 

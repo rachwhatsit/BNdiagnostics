@@ -141,3 +141,11 @@ cond_abs_stand(Xs_cond, 2)
 cond_abs_stand(Xe_cond, 2)
 cond_abs_stand(Xl_cond, 3)
 cond_abs_stand(Xh_cond, 2)
+
+###compile with gRain 
+library(gRain)
+chds.junction = compile(as.grain(chds.gs))#convert to a gRain object 
+querygrain(chds.junction, nodes=c("Social","Economic","Events","Admission"), type="marginal")
+
+chds.ev <- setEvidence(chds.junction,nodes="Social",states="High")
+querygrain(chds.ev, nodes=c("Economic","Events"),type="joint")
