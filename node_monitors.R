@@ -77,7 +77,7 @@ cond_abs_stand(c(0.14,0.36,0.5),3)
 #how can we functionize this?
 
 ##UNCONDITIONAL CUT MONITORS FOR THE CEG 
-marg_monitor <- function(vec,j){ #returns z score for the ith node with the jth worst level
+standardize <- function(vec,j){ #returns z score for the ith node with the jth worst level
   p <- vec[j] #pick the worst one
   sm <- -log(p)
   em <- - sum(vec[j]*log(vec[j]))
@@ -149,3 +149,35 @@ querygrain(chds.junction, nodes=c("Social","Economic","Events","Admission"), typ
 
 chds.ev <- setEvidence(chds.junction,nodes="Social",states="High")
 querygrain(chds.ev, nodes=c("Economic","Events"),type="joint")
+querygrain(chds.ev, nodes=c("Economic"),type="joint") %>% marg_monitor(1)#j corresponds to the 
+querygrain(chds.ev, nodes=c("Economic","Events"),type="marginal")
+chds.ev <- setEvidence(chds.junction,nodes=c("Social", "Economic","Events","Admission"),states=c("High", "High","Average","No"))
+querygrain(chds.ev, nodes=c("Economic","Events"),type="joint")
+querygrain(chds.ev, nodes=c("Economic","Events"),type="marginal")
+
+
+chds.gs -> dag; df -> df; obs.vec <- rep(1,4)
+marg.node.monitor <- function(dag,df,obs.vec){#returns the mth node monitor 
+  dag.junction = compile(as.grain(dag))#convert to a gRain object 
+  querygrain(dag.junction, nodes=colnames(df), type="marginal") %>%
+  map2(obs.vec,standardize) -> z.score
+  return(z.score)
+}
+
+marg.node.monitor(chds.gs,df,obs.vec)
+
+cond.node.monitor <- function(dag,df,obs.vec){
+  dag.junction = compile(as.grain(dag))#convert to a gRain object 
+  map(1:length(colnames(df)),pass.ev) %>% 
+    map2(obs.vec,standardize)-> z.score
+  return(z.score)
+}
+
+cond.node.monitor(chds.gs,df,obs.vec)
+
+pass.ev <-function(i){
+  ev <- querygrain(setEvidence(net1,evidence=list(df[dim(df)[1],-i]), nodes=colnames(df)[i]))
+  evi <- ev[[i]]
+  return(evi)
+}
+
