@@ -1,5 +1,4 @@
-
-
+#TODO ouptut plot
 #TODO does this go in the right place?? 
 #subsidiary functions
 get.num.pa.combo <- function(pa.val){

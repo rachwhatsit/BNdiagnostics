@@ -1,5 +1,7 @@
 #node diagnostics  
-
+#TODO final outputs
+#TODO temporal outputs 
+#TODO graph output
 
 standardize <- function(vec,j){ #returns z score for the ith node with the jth worst level
   p <- vec[j] #pick the worst one

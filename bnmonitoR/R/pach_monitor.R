@@ -1,3 +1,5 @@
+#TODO final ouutput
+#TODO chart 
 #pa.names different from those of the global monitor 
 #pa.val different from that of the global monitors (user inputed)
 seq.pa.ch.monitor <- function(df, dag, node.idx, pa.names, pa.val,which.val){#takes input from bnlearn
