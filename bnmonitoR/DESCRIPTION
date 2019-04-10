@@ -7,3 +7,10 @@ Depends: R (>= 3.5.1)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+ 
+Imports:
+    dtidyverse,
+    gRain,
+    bnlearn,
+    DiagrammeR,
+    rlang
