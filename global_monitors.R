@@ -2,7 +2,6 @@ library(bnlearn)
 library(tidyverse)
 library(rlang)
 library(purrr)
-library(reshape2)
 
 setwd("C:/Users/rachel/Documents/BNdiagnostics/")
 df <- read.csv("CHDS.latentexample1.csv")
@@ -151,7 +150,7 @@ seq.pa.ch.monitor <- function(df, node.idx, pa.names, pa.val,which.val){
   }
   t <- 1:dim(df)[1]
   as.data.frame(cbind(t,z,z.learn)) %>% 
-    melt(id='t') %>% #TODO add the variable ggtitle to this plot 
+    reshape2::melt(id='t') %>% #TODO add the variable ggtitle to this plot 
     ggplot(aes(x=t, y=value, colour=variable)) + geom_line() + xlab('Relevant sample size') + ylab('Standardized Z Statistic') + theme_minimal() + 
       scale_colour_discrete(name="", labels=c("Expert's prior, without learning", "Expert's prior with learning")) + theme(legend.position="bottom")
 }
@@ -159,3 +158,4 @@ seq.pa.ch.monitor <- function(df, node.idx, pa.names, pa.val,which.val){
 df=df; node.idx = 3;pa.names = "Social";pa.val = "High"; which.val=1
 
 seq.pa.ch.monitor(df=df, node.idx = 3,pa.names = "Social",pa.val = "High", which.val = 1)
+
