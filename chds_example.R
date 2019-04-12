@@ -15,6 +15,7 @@ arc.set = matrix(c("Social", "Economic",
                  dimnames = list(NULL, c("from", "to")))
 arcs(chds.dag) = arc.set
 
+chds.elicited = bn.fit(chds.dag, df)#the elicited dag
 skeleton(chds.dag)
 moral(chds.dag)
 graphviz.plot(chds.dag)

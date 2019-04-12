@@ -13,7 +13,6 @@ standardize <- function(vec,j){ #returns z score for the ith node with the jth w
 }
 
 
-chds.gs -> dag; df -> df; obs.vec <- rep(1,4)
 marg.node.monitor <- function(dag,df,obs.vec){#returns the mth node monitor 
   num.nodes <- length(nodes(dag))
   dag.junction = compile(as.grain(dag))#convert to a gRain object 

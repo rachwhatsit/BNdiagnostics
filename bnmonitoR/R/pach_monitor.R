@@ -12,7 +12,6 @@ seq.pa.ch.monitor <- function(df, dag, node.idx, pa.names, pa.val,which.val){#ta
   
   alpha.vec <- rep(alpha/num.values[node.idx], num.values[node.idx])
   new.alpha <- alpha.vec #this is the one with learning
-  #TODO we should learn over the whole data set, right? 
   counts <- rep(0,num.values[node.idx])
   z <- rep(0,dim(df)[1])
   z.learn <- rep(0,dim(df)[1])

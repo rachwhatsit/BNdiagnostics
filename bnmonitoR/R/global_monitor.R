@@ -22,12 +22,12 @@ global.monitor.bn.node.gs <- function(node.idx,dag,alpha,df){#j is the index of 
   num.nodes <- length(dag$nodes)
   pa.val <- map(dag$nodes, `[[`, "parents") #proeprocessing
   num.pa.combo <- get.num.pa.combo(pa.val) #TODO does this work?
-  num.values <- map_int(1:num.nodes, function(node.idx){length(unique(df[,node.idx]))})
+  num.values <- map_int(1:num.nodes, function(i){length(unique(df[,i]))})
   
   alpha.vec <<- rep(alpha/num.values[node.idx], num.values[node.idx]) #TODO adjust so there is a different way to code alpha
   pa.names <-c(unlist(pa.val[node.idx] ), colnames(df)[node.idx])
   df %>% count(!!!(syms(pa.names))) %>% complete %>% pull(n) ->> counts.vec
   map_dbl(1:num.pa.combo[node.idx], ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
   score <- unlist(sum(scores.vec))
-  return(list(scores.vec))#returns global and pach monitor  
+  return(score)#returns global and pach monitor  
 }  #TODO decide if we want to return just the global score or also the component scores from each pa.ch. pair

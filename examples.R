@@ -1,7 +1,4 @@
-library(bnlearn)
-library(tidyverse)
-library(rlang)
-library(purrr)
+library(bnlearn); library(tidyverse); library(rlang)
 
 setwd("C:/Users/rachel/Documents/BNdiagnostics/")
 df <- read.csv("CHDS.latentexample1.csv")
@@ -15,6 +12,7 @@ arc.set = matrix(c("Social", "Economic",
                  dimnames = list(NULL, c("from", "to")))
 arcs(chds.dag) = arc.set
 
+chds.dag <- bn.fit(chds.dag,df)
 skeleton(chds.dag)
 moral(chds.dag)
 graphviz.plot(chds.dag)
@@ -103,8 +101,8 @@ global.monitor.bn.node.gs <- function(i,num.pa.combo,alpha,df){#j is the index o
 }  
 
 global.monitor.bn.node(2, chds.num.pa.combo,alpha=3)#as a comparison for the elicited model
-global.monitor.bn.node.gs(1, chds.gs.num.pa.combo,alpha=3,df)#the grow shrink algorithm model
-global.monitor.bn.node.gs(2, chds.gs.num.pa.combo,alpha=3,df)#the grow shrink algorithm model
+global.monitor.bn.node.gs(node.idx = 1, dag = chds.gs,alpha=3,df)#the grow shrink algorithm model
+global.monitor.bn.node.gs(node.idx = 2, dag = chds.gs.num.pa.combo,alpha=3,df)#the grow shrink algorithm model
 global.monitor.bn.node.gs(3, chds.gs.num.pa.combo,alpha=3,df)#the grow shrink algorithm model
 global.monitor.bn.node.gs(4, chds.gs.num.pa.combo,alpha=3,df)#the grow shrink algorithm model
 
@@ -120,7 +118,7 @@ pa.ch.bn.monitor <- function(node.idx, num.pa.combo, pa.combo.idx, df, alpha){
   return(z)
 }
 
-node.idx=3; num.pa.combo=chds.gs.num.pa.combo; pa.combo.idx = 3; df = df;alpha = 3
+node.idx=3; dag = chds.gs;num.pa.combo=chds.gs.num.pa.combo; pa.combo.idx = 3; df = df;alpha = 3
 pa.ch.bn.monitor(node.idx=3, num.pa.combo=chds.gs.num.pa.combo, pa.combo.idx = 3, df = df,alpha = 3)->test
 
 seq.pa.ch.monitor <- function(df, node.idx, pa.names, pa.val,which.val){
