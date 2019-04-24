@@ -8,4 +8,4 @@ asia.bn.fit <- bn.fit(asia.dag, asia)
 
 node.idx = 3;dag = asia.dag;alpha = 2;df = asia
 
-global.monitor.bn(node.idx = 3,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node(node.idx = 3,dag = asia.dag,alpha = 2,df = asia)
