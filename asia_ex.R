@@ -6,6 +6,11 @@ graphviz.plot(asia.dag)
 
 asia.bn.fit <- bn.fit(asia.dag, asia)
 
-node.idx = 3;dag = asia.dag;alpha = 2;df = asia
+node.idx = 4;dag = asia.dag;alpha = 2;df = asia
 
-global.monitor.bn.node(node.idx = 3,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node(node.idx = 7,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
+
+#returns the global monitor for each node 
+
+map_dbl(.x=1:length(asia.dag$nodes), dag=asia.dag, alpha=2, df=asia, .f= global.monitor.bn.node)

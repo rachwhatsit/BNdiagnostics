@@ -26,9 +26,9 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
   
   
   alpha.vec <<- rep(alpha/num.values[node.idx], num.values[node.idx]) #TODO adjust so there is a different way to code alpha
-  pa.names <-c(unlist(pa.val[node.idx] ), colnames(df)[node.idx])
-  df %>% count(!!!(syms(pa.names))) %>% complete %>% pull(n) ->> counts.vec
-  map_dbl(1:num.pa.combo[node.idx], ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
+  pa.names <-c(unlist(pa.val[node.idx] ,use.names = FALSE), names(pa.val)[[node.idx]])
+  df %>% count(!!!(syms(pa.names))) %>% complete(!!!(syms(pa.names)),fill = list(n = 0)) %>% pull(n) ->> counts.vec 
+  map_dbl(1:num.pa.combo, ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
   score <- unlist(sum(scores.vec))
   return(score)#returns global and pach monitor  
 }  
