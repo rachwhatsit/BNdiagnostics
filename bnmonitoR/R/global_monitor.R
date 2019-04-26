@@ -32,3 +32,33 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
   score <- unlist(sum(scores.vec))
   return(score)#returns global and pach monitor  
 }  
+
+
+global.monitor.graph <- function(dag, alpha, df){#node.scores output from global.bn
+  
+  node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
+  result <-as_tibble(cbind(names(dag$nodes),node.scores))
+  result$node.scores <- as.numeric(result$node.scores)#return this result for each node 
+  
+  my.colors = brewer.pal(length(names(dag$nodes)),"Blues")
+  max.val <- ceiling(max(abs(node.scores)))
+  my.palette <- colorRampPalette(my.colors)(max.val)
+  node.colors <- my.palette[floor(abs(node.scores))]
+  nodes <- create_node_df(n=length(dag$nodes),
+                          type= names(dag$nodes),
+                          label=names(dag$nodes),
+                          style="filled",
+                          fontcolor="black",
+                          fillcolor=node.colors)
+  
+  from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
+  to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
+  
+  edges <- create_edge_df(from=match(from.nodes,names(dag$nodes)),
+                          to=match(to.nodes,names(dag$nodes)))
+  create_graph(
+    nodes_df = nodes,
+    edges_df = edges) %>%
+    render_graph(output = "graph")
+  return(result)#TODO return the graph as well 
+}

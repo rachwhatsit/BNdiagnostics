@@ -5,10 +5,8 @@
 seq.pa.ch.monitor <- function(df, dag, node.idx, pa.names, pa.val,which.val){#takes input from bnlearn
   nodes <-nodes(dag)
   num.nodes <- length(dag$nodes)
-  num.ch <- map(dag, `[[`, "children")  %>% map_int(length)
+  num.ch <- map(dag$nodes, `[[`, "children")  %>% map_int(length)
   num.values <- map_int(1:num.nodes, function(i){length(unique(df[,i]))})
-  #num.pa <-map(dag, `[[`, "parents")  %>% map_int(length)
-  #pa.val <- map(dag, `[[`, "parents")   
   
   alpha.vec <- rep(alpha/num.values[node.idx], num.values[node.idx])
   new.alpha <- alpha.vec #this is the one with learning

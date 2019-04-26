@@ -12,5 +12,6 @@ Imports:
     gRain,
     bnlearn,
     DiagrammeR,
-    rlang
+    rlang,
+    RColorBrewer
 RoxygenNote: 6.1.1
