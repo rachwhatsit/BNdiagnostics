@@ -14,7 +14,7 @@ seq.pa.ch.monitor <- function(df, dag, node.idx, pa.names, pa.val,which.val){#ta
   z <- rep(0,dim(df)[1])
   z.learn <- rep(0,dim(df)[1])
   for(i in 1:dim(df)[1]){
-    if(df[i,][[pa.names]]==pa.val){#TODO change this to accommodate parent pairs (use any)
+    if(all(df[i,pa.names]==pa.val)){#TODO change this to accommodate parent pairs (use any)
       counts[as.numeric(df[i,node.idx])] <- counts[as.numeric(df[i,node.idx])] + 1
       new.alpha[as.numeric(df[i,node.idx])] <- new.alpha[as.numeric(df[i,node.idx])] + 1
     } else {
