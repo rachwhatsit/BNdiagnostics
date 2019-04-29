@@ -34,6 +34,14 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
 }  
 
 
+global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.bn
+  
+  node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
+  result <-as_tibble(cbind(names(dag$nodes),node.scores))
+  result$node.scores <- as.numeric(result$node.scores)#return this result for each node 
+  return(result)#TODO return the graph as well 
+}
+
 global.monitor.graph <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
@@ -60,5 +68,4 @@ global.monitor.graph <- function(dag, alpha, df){#node.scores output from global
     nodes_df = nodes,
     edges_df = edges) %>%
     render_graph(output = "graph")
-  return(result)#TODO return the graph as well 
 }
