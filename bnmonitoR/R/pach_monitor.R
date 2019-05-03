@@ -1,9 +1,13 @@
-#TODO final ouutput
-#TODO chart 
-#pa.names different from those of the global monitor 
-#pa.val different from that of the global monitors (user inputed)
-seq.pa.ch.monitor <- function(df, dag, node.idx, pa.names, pa.val,which.val){#takes input from bnlearn
+#' the sequential parent child node monitor for Bayesian networks
+#'@param df base R style data frame
+#'@param dag bnlearn object with DAG structure, not a fitte dobject 
+#'@param node.name name of child node
+#'@param pa.names names of parents in the network
+#'@param pa.val names of values to test
+#'@param which.val which level of the value to test
+seq.pa.ch.monitor <- function(df, dag, node.name, pa.names, pa.val,which.val){#takes input from bnlearn
   nodes <-nodes(dag)
+  node.idx <- which(node.name ==names(dag$nodes))
   num.nodes <- length(dag$nodes)
   num.ch <- map(dag$nodes, `[[`, "children")  %>% map_int(length)
   num.values <- map_int(1:num.nodes, function(i){length(unique(df[,i]))})

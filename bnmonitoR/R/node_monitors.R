@@ -1,70 +1,115 @@
-#node diagnostics  
-#TODO final outputs
-#TODO temporal outputs 
-#TODO graph output 
-
-
-df=asia; dag = asia.dag
-
-
-
-standardize <- function(vec,j){ #returns z score for the ith node with the jth worst level
-  p <- unlist(vec) #pick the worst one
-  sm <- -log(p)
-  em <- - sum(p*log(p))
-  vm <- sum(p*(log(p)^2)) - em^2
-  zm <- sm[j]-em/sqrt(vm)
-  return(zm)
-}
-
+#' Node Monitors 
+#' @param dag bnlearn object 
+#' @param df dataset 
 
 marg.node.monitor <- function(dag,df){#returns the mth node monitor 
   num.nodes <- length(nodes(dag))
   dag.bn.fit <- bn.fit(dag, df)
   dag.grain <- as.grain(dag.bn.fit)
   worst.level <- as.numeric(df[dim(df)[1],])
-  querygrain(dag.grain, nodes=colnames(df), type="marginal") %>%
-  map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
-  return(final.z.score)
+  querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
+  ev[match(names(df),names(ev))] %>%
+    map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
+  final.z.scores <- final.z.score[match(names(df),names(final.z.score))]
+  return(final.z.scores)
 }
 
-marg.node.monitor.t <- function(dag,df, t){#returns the mth node monitor 
+#'@describeIn marg.node.monitor
+marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
+  
   num.nodes <- length(nodes(dag))
-  df[1:t,] -> df.cut
-  dag.bn.fit <- bn.fit(dag, df.cut)
+  dag.bn.fit <- bn.fit(dag, df)
   dag.grain <- as.grain(dag.bn.fit)
-  worst.level <- as.numeric(df.cut[dim(df.cut)[1],])
-  querygrain(dag.grain, nodes=colnames(df), type="marginal") %>%
-    map2_dbl(.y=worst.level,standardize) -> z.score #this returns the vvery last marginal
-  return(z.score)
+  worst.level <- as.numeric(df[dim(df)[1],])
+  querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
+  ev[match(names(df),names(ev))] %>% #reordering to match 
+    map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
+  
+  my.colors = brewer.pal(length(names(dag$nodes)),"Greens")
+  max.val <- ceiling(max(abs(final.z.score)))
+  my.palette <- colorRampPalette(my.colors)(max.val)
+  node.colors <- my.palette[floor(abs(final.z.score))+1]
+  nodes <- create_node_df(n=length(names(df)),
+                          type= names(df),
+                          label=names(df),
+                          style="filled",
+                          fontcolor="black",
+                          fillcolor=node.colors)
+  
+  from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
+  to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
+  
+  edges <- create_edge_df(from=match(from.nodes,names(df)),
+                          to=match(to.nodes,names(df)))
+  create_graph(
+    nodes_df = nodes,
+    edges_df = edges) %>%
+    render_graph(output = "graph",title="Marginal Node Monitors",layout='tree')
 }
 
-#how to map it over a data frame.
-
-
-marg.node.monitor(dag.grain,df)
-
-pass.ev <-function(i){
-  ev <- querygrain(setEvidence(net1,evidence=list(df[dim(df)[1],-i]), nodes=colnames(df)[i]))
-  evi <- ev[[i]]
-  return(evi)
-}
-
-
-
-cond.node.monitor <- function(dag,df,obs.vec){
-  dag.junction = compile(as.grain(dag))#convert to a gRain object 
+#'@describeIn marg.node.monitor
+cond.node.monitor <- function(dag,df){
+  dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
+  dag.grain <- as.grain(dag.bn.fit)
+  worst.level <- as.numeric(df[dim(df)[1],])
   map(1:length(colnames(df)),pass.ev) %>% 
-    map2(obs.vec,standardize)-> z.score
-  return(z.score)
+    map2(worst.level,standardize) %>% 
+    unlist %>% unname-> z.scores
+  names(z.scores) <- names(df)
+  return(z.scores)
 }
 
+#'@describeIn marg.node.monitor
+cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
+  
+  dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
+  dag.grain <- as.grain(dag.bn.fit)
+  worst.level <- as.numeric(df[dim(df)[1],])
+  map(1:length(colnames(df)),pass.ev) %>% 
+    map2(worst.level,standardize) %>% 
+    unlist %>% unname-> z.scores
+  names(z.scores) <- names(df)
+  
+  my.colors = brewer.pal(length(names(dag$nodes)),"Greens")
+  max.val <- ceiling(max(abs(z.scores)))
+  my.palette <- colorRampPalette(my.colors)(max.val)
+  node.colors <- my.palette[floor(abs(z.scores))+1]
+  nodes <- create_node_df(n=length(names(df)),
+                          type= names(df),
+                          label=names(df),
+                          style="filled",
+                          fontcolor="black",
+                          fillcolor=node.colors)
+  
+  from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
+  to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
+  
+  edges <- create_edge_df(from=match(from.nodes,names(df)),
+                          to=match(to.nodes,names(df)))
+  create_graph(
+    nodes_df = nodes,
+    edges_df = edges) %>%
+    render_graph(output = "graph",title="Conditional Node Monitors",layout='tree')
+}
 
-mu <- list(5, 10, -3)
-sigma <- list(1, 5, 10)
-n <- list(1, 3, 5)
- 
-args2 <- list(mean = mu, sd = sigma, n = n)
-pmap(args2, rnorm)
-
-pmap_dbl(l,standardize)
+#'@describeIn marg.node.monitor
+node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
+  num.nodes <- length(nodes(dag))
+  dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
+  dag.grain <- as.grain(dag.bn.fit)
+  worst.level <- as.numeric(df[dim(df)[1],])
+  map(1:length(colnames(df)),pass.ev) %>% 
+    map2(worst.level,standardize) %>% 
+    unlist %>% unname-> cond.z.scores
+  
+  dag.bn.fit.marg <- bn.fit(dag, df)
+  dag.grain.marg <- as.grain(dag.bn.fit.marg)
+  querygrain(dag.grain.marg, nodes=colnames(df), type="marginal") ->ev
+  ev[match(names(df),names(ev))] %>%
+    map2_dbl(.y=worst.level,standardize) -> marg.z.score #this returns the vvery last marginal
+  marg.z.scores <- marg.z.score[match(names(df),names(marg.z.score))]
+  
+  result <-as_tibble(cbind(names(df),as.numeric(marg.z.scores),as.numeric(cond.z.scores)))
+  names(result) <- c('node','marg.z.score','cond.z.score')
+  return(result)#TODO return the graph as well 
+}

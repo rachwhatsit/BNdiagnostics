@@ -1,0 +1,81 @@
+---
+title: "Asia example"
+author: "Rachel Wilkerson"
+date: "3 May 2019"
+output:
+  html_document:
+    keep_md: true
+---
+## Prequential diagnostic monitors for Bayesian Networks
+
+Package exists to check the goodness of fit for a BN model. Package is designed to interface with objects of class bnlearn. 
+
+```{r,warning=FALSE, echo=FALSE,message=FALSE}
+library(tidyverse)
+library(gRain)
+library(bnlearn)
+library(DiagrammeR)
+library(rlang)
+library(RColorBrewer)
+load(file = "asia_ex.Rdata")
+```
+
+
+```{r, eval=FALSE, message=FALSE}
+devtools::install_github('bnmonitoR','rachwhatsit')
+```
+
+Load the package from github.
+```{r, message=FALSE}
+library(bnmonitoR)
+```
+
+We will examine the dataset from the bnlearn package from Lauritzen. Details of the variables (nodes) can be found in the documentation for bnlearn.
+```{r asia, message=FALSE}
+data(asia)
+summary(asia)
+```
+
+We will specify the structure of the model here. This corresponds to the candidate model from Cowell et al. pg 240
+```{r,message=FALSE,cache=TRUE}
+asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
+bnlearn::graphviz.plot(asia.dag)
+```
+
+### Global monitor
+
+The global monitor is equivalent to the Bayes Factor and offers a good assessment of the model as a whole.
+```{r,cache=TRUE}
+global.monitor.tbl(asia.dag, alpha = 2, df=asia)
+```
+
+The darker colors correspond to nodes with a greater contribution to the Bayes Factor. 
+```{r, cache=TRUE}
+global.monitor.graph(asia.dag, alpha = 2, df=asia)
+```
+ 
+```{r, cache=TRUE}
+asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
+global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
+
+```
+
+### Parent child monitor
+
+This function computes the predictive probabilitie for observing the particular 
+```{r}
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes',which.val=2)#why is this so different for learning and no learning??
+```
+
+### Node monitors
+```{r}
+node.monitor.tbl(asia.dag,asia)
+```
+
+```{r}
+marg.node.monitor.graph(asia.dag,asia)
+```
+
+cond.node.monitor.graph(asia.dag,asia)
+
