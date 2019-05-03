@@ -24,8 +24,9 @@ seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val =
 #try for a node with two parents 
 #E, pa(E) = {T,L}
 
-df=asia; dag=asia.dag; node.idx=4; pa.names = c("T","L"); pa.val = c('no', 'no');which.val=1
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.idx=4, pa.names = c("T","L"), pa.val = c('no', 'no'),which.val=1)
+df=asia; dag=asia.dag; node.name="E"; pa.names = c("T","L"); pa.val = c('no', 'no');which.val=1
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('no', 'no'),which.val=1)
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'no'),which.val=1)
 #NOTE THIS: which.val is which value for the CHILD node, not the parent
 
 
