@@ -67,5 +67,5 @@ global.monitor.graph <- function(dag, alpha, df){#node.scores output from global
   create_graph(
     nodes_df = nodes,
     edges_df = edges) %>%
-    render_graph(output = "graph")
+    render_graph(output = "graph",title="Global Monitors",layout='tree')
 }

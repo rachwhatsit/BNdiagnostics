@@ -17,7 +17,7 @@ global.monitor.bn.node(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
 global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 global.monitor.graph(asia.dag, alpha = 2, df=asia)
 
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.idx=7, pa.names = "A", pa.val = 'yes',which.val=2)#why is this so different??
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.idx=7, pa.names = "A", pa.val = 'yes',which.val=2)#why is this so different for learning and no learning??
 
 #try for a node with two parents 
 #E, pa(E) = {T,L}
@@ -28,9 +28,13 @@ seq.pa.ch.monitor(df=asia, dag=asia.dag, node.idx=4, pa.names = c("T","L"), pa.v
 
 
 #NODE monitors 
+
 #final output table
-
+marg.node.monitor(asia.dag,asia)
 #temporal output table
-
+marg.node.monitor.t(dag = asia.dag,df = asia,t = 3000)
 #grapical output 
 
+#conditional ouptut table
+
+#conditional temporal output

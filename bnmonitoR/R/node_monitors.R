@@ -6,27 +6,41 @@
 
 df=asia; dag = asia.dag
 
-dag.bn.fit <- bn.fit(dag, df)
-dag.grain = as.grain(dag.bn.fit)
 
 
 standardize <- function(vec,j){ #returns z score for the ith node with the jth worst level
-  p <- unlist(vec[j]) #pick the worst one
+  p <- unlist(vec) #pick the worst one
   sm <- -log(p)
   em <- - sum(p*log(p))
   vm <- sum(p*(log(p)^2)) - em^2
-  zm <- sm-em/sqrt(vm)
+  zm <- sm[j]-em/sqrt(vm)
   return(zm)
 }
 
 
 marg.node.monitor <- function(dag,df){#returns the mth node monitor 
   num.nodes <- length(nodes(dag))
-  dag.junction = compile(as.grain(dag.grain))#convert to a gRain object 
+  dag.bn.fit <- bn.fit(dag, df)
+  dag.grain <- as.grain(dag.bn.fit)
+  worst.level <- as.numeric(df[dim(df)[1],])
   querygrain(dag.grain, nodes=colnames(df), type="marginal") %>%
-  map2(1:num.nodes,standardize) -> z.score
+  map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
+  return(final.z.score)
+}
+
+marg.node.monitor.t <- function(dag,df, t){#returns the mth node monitor 
+  num.nodes <- length(nodes(dag))
+  df[1:t,] -> df.cut
+  dag.bn.fit <- bn.fit(dag, df.cut)
+  dag.grain <- as.grain(dag.bn.fit)
+  worst.level <- as.numeric(df.cut[dim(df.cut)[1],])
+  querygrain(dag.grain, nodes=colnames(df), type="marginal") %>%
+    map2_dbl(.y=worst.level,standardize) -> z.score #this returns the vvery last marginal
   return(z.score)
 }
+
+#how to map it over a data frame.
+
 
 marg.node.monitor(dag.grain,df)
 
@@ -46,3 +60,11 @@ cond.node.monitor <- function(dag,df,obs.vec){
 }
 
 
+mu <- list(5, 10, -3)
+sigma <- list(1, 5, 10)
+n <- list(1, 3, 5)
+ 
+args2 <- list(mean = mu, sd = sigma, n = n)
+pmap(args2, rnorm)
+
+pmap_dbl(l,standardize)
