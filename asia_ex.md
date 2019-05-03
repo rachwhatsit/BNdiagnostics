@@ -85,9 +85,31 @@ global.monitor.graph(asia.dag, alpha = 2, df=asia)
 <!--html_preserve--><div id="htmlwidget-075ded7f105a4d7b1e0b" style="width:672px;height:480px;" class="grViz html-widget"></div>
 <script type="application/json" data-for="htmlwidget-075ded7f105a4d7b1e0b">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       label = \"Global Monitors\",\n       labelloc = \"t\",\n       labeljust = \"c\",\n       fontname = \"Helvetica\",\n       fontcolor = \"gray30\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF3FB\", pos = \"0,4!\"] \n  \"2\" [label = \"B\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#1E6CB1\", pos = \"2,3!\"] \n  \"3\" [label = \"D\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#5DA4D0\", pos = \"2,1!\"] \n  \"4\" [label = \"E\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F6FAFE\", pos = \"0.5,2!\"] \n  \"5\" [label = \"L\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#BDD7EB\", pos = \"1,3!\"] \n  \"6\" [label = \"S\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#084594\", pos = \"1.5,4!\"] \n  \"7\" [label = \"T\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF2FA\", pos = \"0,3!\"] \n  \"8\" [label = \"X\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#CCDFF1\", pos = \"0.5,1!\"] \n  \"6\"->\"2\" \n  \"2\"->\"3\" \n  \"4\"->\"3\" \n  \"5\"->\"4\" \n  \"7\"->\"4\" \n  \"6\"->\"5\" \n  \"1\"->\"7\" \n  \"4\"->\"8\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
  
+The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole.
+
 
 ```r
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
+model0 <- global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+```
+
+```
+## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+## This warning is displayed once per session.
+```
+
+```r
+model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
+
+sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
+```
+
+```
+## [1] 1.000798
+```
+
+
+```r
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 ```
 
@@ -109,20 +131,22 @@ global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 ```
 
-<!--html_preserve--><div id="htmlwidget-e30dde15784b9deb7d55" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e30dde15784b9deb7d55">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       label = \"Global Monitors\",\n       labelloc = \"t\",\n       labeljust = \"c\",\n       fontname = \"Helvetica\",\n       fontcolor = \"gray30\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF3FB\", pos = \"0,4!\"] \n  \"2\" [label = \"B\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#1E6CB1\", pos = \"2,3!\"] \n  \"3\" [label = \"D\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#5DA4D0\", pos = \"2,1!\"] \n  \"4\" [label = \"E\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F6FAFE\", pos = \"0.5,2!\"] \n  \"5\" [label = \"L\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#BDD7EB\", pos = \"1,3!\"] \n  \"6\" [label = \"S\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#084594\", pos = \"2,4!\"] \n  \"7\" [label = \"T\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF2FA\", pos = \"0,3!\"] \n  \"8\" [label = \"X\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#CCDFF1\", pos = \"0.5,1!\"] \n  \"6\"->\"2\" \n  \"2\"->\"3\" \n  \"4\"->\"3\" \n  \"6\"->\"3\" \n  \"5\"->\"4\" \n  \"7\"->\"4\" \n  \"6\"->\"5\" \n  \"1\"->\"7\" \n  \"4\"->\"8\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
+<!--html_preserve--><div id="htmlwidget-1e0be30dde15784b9deb" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1e0be30dde15784b9deb">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       label = \"Global Monitors\",\n       labelloc = \"t\",\n       labeljust = \"c\",\n       fontname = \"Helvetica\",\n       fontcolor = \"gray30\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF3FB\", pos = \"0,4!\"] \n  \"2\" [label = \"B\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#1E6CB1\", pos = \"2,3!\"] \n  \"3\" [label = \"D\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#5DA4D0\", pos = \"2,1!\"] \n  \"4\" [label = \"E\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F6FAFE\", pos = \"0.5,2!\"] \n  \"5\" [label = \"L\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#BDD7EB\", pos = \"1,3!\"] \n  \"6\" [label = \"S\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#084594\", pos = \"2,4!\"] \n  \"7\" [label = \"T\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EAF2FA\", pos = \"0,3!\"] \n  \"8\" [label = \"X\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#CCDFF1\", pos = \"0.5,1!\"] \n  \"6\"->\"2\" \n  \"2\"->\"3\" \n  \"4\"->\"3\" \n  \"6\"->\"3\" \n  \"5\"->\"4\" \n  \"7\"->\"4\" \n  \"6\"->\"5\" \n  \"1\"->\"7\" \n  \"4\"->\"8\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
 
 ### Parent child monitor
 
-This function computes the predictive probabilitie for observing the particular 
+This function computes the predictive probabilities for observing the particular combinations of parent and child values.
 
 ```r
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes',which.val=2)#why is this so different for learning and no learning??
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'no'),which.val=1)
 ```
 
-![](asia_ex_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](asia_ex_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 ### Node monitors
+
+Two types of node monitors are calculated: marginal and conditional.
 
 ```r
 node.monitor.tbl(asia.dag,asia)
@@ -147,8 +171,9 @@ node.monitor.tbl(asia.dag,asia)
 marg.node.monitor.graph(asia.dag,asia)
 ```
 
-<!--html_preserve--><div id="htmlwidget-584ebe1db0dbf3efa04f" style="width:672px;height:480px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-584ebe1db0dbf3efa04f">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       label = \"Marginal Node Monitors\",\n       labelloc = \"t\",\n       labeljust = \"c\",\n       fontname = \"Helvetica\",\n       fontcolor = \"gray30\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0,4!\"] \n  \"2\" [label = \"S\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#005A32\", pos = \"1.5,4!\"] \n  \"3\" [label = \"T\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0,3!\"] \n  \"4\" [label = \"L\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"1,3!\"] \n  \"5\" [label = \"B\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#C3E7BC\", pos = \"2,3!\"] \n  \"6\" [label = \"E\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0.5,2!\"] \n  \"7\" [label = \"X\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0.5,1!\"] \n  \"8\" [label = \"D\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EBF7E8\", pos = \"2,1!\"] \n  \"2\"->\"5\" \n  \"5\"->\"8\" \n  \"6\"->\"8\" \n  \"4\"->\"6\" \n  \"3\"->\"6\" \n  \"2\"->\"4\" \n  \"1\"->\"3\" \n  \"6\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
+<!--html_preserve--><div id="htmlwidget-9deb7d55584ebe1db0db" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9deb7d55584ebe1db0db">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       label = \"Marginal Node Monitors\",\n       labelloc = \"t\",\n       labeljust = \"c\",\n       fontname = \"Helvetica\",\n       fontcolor = \"gray30\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0,4!\"] \n  \"2\" [label = \"S\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#005A32\", pos = \"1.5,4!\"] \n  \"3\" [label = \"T\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0,3!\"] \n  \"4\" [label = \"L\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"1,3!\"] \n  \"5\" [label = \"B\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#C3E7BC\", pos = \"2,3!\"] \n  \"6\" [label = \"E\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0.5,2!\"] \n  \"7\" [label = \"X\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#F7FCF5\", pos = \"0.5,1!\"] \n  \"8\" [label = \"D\", style = \"filled\", fontcolor = \"black\", fillcolor = \"#EBF7E8\", pos = \"2,1!\"] \n  \"2\"->\"5\" \n  \"5\"->\"8\" \n  \"6\"->\"8\" \n  \"4\"->\"6\" \n  \"3\"->\"6\" \n  \"2\"->\"4\" \n  \"1\"->\"3\" \n  \"6\"->\"7\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
 
-cond.node.monitor.graph(asia.dag,asia)
+From this plot, we see that the overall incidence for Smoking, Bronchitis, and Dysnopea are poorly modelled. 
+Because there is very little difference between the marginal and conditional nodes, the graphs in this example are virtually indistinguishable.
 
