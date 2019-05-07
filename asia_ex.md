@@ -39,6 +39,8 @@ asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is th
 bnlearn::graphviz.plot(asia.dag)
 ```
 
+    ## Loading required namespace: Rgraphviz
+
 ![](asia_ex_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ### Global monitor
@@ -77,6 +79,12 @@ The global monitor is most useful when comparing between models. For instance, f
 ``` r
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
 model0 <- global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+```
+
+    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+
+``` r
 model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
