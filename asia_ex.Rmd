@@ -46,7 +46,7 @@ bnlearn::graphviz.plot(asia.dag)
 ### Global monitor
 
 The global monitor is equivalent to the Bayes Factor and offers a good assessment of the model as a whole.
-```{r,cache=TRUE}
+```{r,cache=TRUE,screenshot.force = TRUE}
 global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 ```
 
@@ -65,7 +65,7 @@ model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
 ```
 
-```{r, cache=TRUE}
+```{r, cache=TRUE,screenshot.force = TRUE}
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 
@@ -74,7 +74,7 @@ global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 ### Parent child monitor
 
 This function computes the predictive probabilities for observing the particular combinations of parent and child values.
-```{r}
+```{r,screenshot.force = TRUE}
 seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'no'),which.val=1)
 ```
 
@@ -85,7 +85,7 @@ Two types of node monitors are calculated: marginal and conditional.
 node.monitor.tbl(asia.dag,asia)
 ```
 
-```{r}
+```{r,screenshot.force = TRUE}
 marg.node.monitor.graph(asia.dag,asia)
 ```
 
