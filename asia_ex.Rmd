@@ -3,8 +3,8 @@ title: "Asia example"
 author: "Rachel Wilkerson"
 date: "3 May 2019"
 output:
-  html_notebook: default
   github_document: default
+  html_notebook: default
 ---
 ## Prequential diagnostic monitors for Bayesian Networks
 
@@ -38,7 +38,7 @@ summary(asia)
 ```
 
 We will specify the structure of the model here. This corresponds to the candidate model from Cowell et al. pg 240
-```{r,message=TRUE,cache=TRUE}
+```{r,message=TRUE,cache=TRUE,screenshot.force = TRUE}
 asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
 bnlearn::graphviz.plot(asia.dag)
 ```
