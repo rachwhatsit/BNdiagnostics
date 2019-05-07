@@ -18,6 +18,12 @@ library(DiagrammeR)
 library(rlang)
 library(RColorBrewer)
 load(file = "asia_ex.Rdata")
+pdf_digraph <- function(filename, g){
+  capture.output({
+  DiagrammeRsvg::export_svg(g) %>% charToRaw %>% rsvg::rsvg_pdf(filename)
+  },  file='NUL')
+  knitr::include_graphics(filename)
+}
 
 ```
 
@@ -40,7 +46,8 @@ summary(asia)
 We will specify the structure of the model here. This corresponds to the candidate model from Cowell et al. pg 240
 ```{r,message=TRUE,cache=TRUE,screenshot.force = TRUE}
 asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
-bnlearn::graphviz.plot(asia.dag)
+bnlearn::graphviz.plot(asia.dag) -> code
+#pdf_digraph(filename = "graf.pdf",code)
 ```
 
 ### Global monitor
@@ -52,7 +59,8 @@ global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 
 The darker colors correspond to nodes with a greater contribution to the Bayes Factor. 
 ```{r, cache=TRUE}
-global.monitor.graph(asia.dag, alpha = 2, df=asia)
+global.monitor.graph(asia.dag, alpha = 2, df=asia)->code
+pdf_digraph("graf2.pdf",code)
 ```
  
 The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole.
@@ -66,8 +74,10 @@ sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
 ```
 
 ```{r, cache=TRUE,screenshot.force = TRUE}
-global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
-global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
+global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)->code
+#pdf_digraph("graf3.pdf", code)
+global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)->code2
+pdf_digraph("graf4.pdf",code2)
 
 ```
 

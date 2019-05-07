@@ -36,12 +36,16 @@ We will specify the structure of the model here. This corresponds to the candida
 
 ``` r
 asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
-bnlearn::graphviz.plot(asia.dag)
+bnlearn::graphviz.plot(asia.dag) -> code
 ```
 
     ## Loading required namespace: Rgraphviz
 
 ![](asia_ex_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+``` r
+#pdf_digraph(filename = "graf.pdf",code)
+```
 
 ### Global monitor
 
@@ -69,16 +73,29 @@ global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 The darker colors correspond to nodes with a greater contribution to the Bayes Factor.
 
 ``` r
-global.monitor.graph(asia.dag, alpha = 2, df=asia)
+global.monitor.graph(asia.dag, alpha = 2, df=asia)->code
 ```
 
-![](asia_ex_files/figure-markdown_github/unnamed-chunk-6-1.png)
+    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+
+``` r
+pdf_digraph("graf2.pdf",code)
+```
+
+![](graf2.pdf)
 
 The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole.
 
 ``` r
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
 model0 <- global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+```
+
+    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+
+``` r
 model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
@@ -87,26 +104,13 @@ sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
     ## [1] 1.000798
 
 ``` r
-global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)->code
+#pdf_digraph("graf3.pdf", code)
+global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)->code2
+pdf_digraph("graf4.pdf",code2)
 ```
 
-    ## # A tibble: 8 x 2
-    ##   V1    node.scores
-    ##   <chr>       <dbl>
-    ## 1 A          -248. 
-    ## 2 B         -3021. 
-    ## 3 D         -2153. 
-    ## 4 E           -19.6
-    ## 5 L         -1100. 
-    ## 6 S         -3470. 
-    ## 7 T          -258. 
-    ## 8 X          -849.
-
-``` r
-global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
-```
-
-![](asia_ex_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](graf4.pdf)
 
 ### Parent child monitor
 
