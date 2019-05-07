@@ -2,9 +2,7 @@
 title: "Asia example"
 author: "Rachel Wilkerson"
 date: "3 May 2019"
-output:
-  html_document:
-    keep_md: true
+output: github_document
 ---
 ## Prequential diagnostic monitors for Bayesian Networks
 
