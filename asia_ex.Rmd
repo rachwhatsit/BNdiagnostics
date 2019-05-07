@@ -2,7 +2,9 @@
 title: "Asia example"
 author: "Rachel Wilkerson"
 date: "3 May 2019"
-output: github_document
+output:
+  html_notebook: default
+  github_document: default
 ---
 ## Prequential diagnostic monitors for Bayesian Networks
 
@@ -16,7 +18,7 @@ library(DiagrammeR)
 library(rlang)
 library(RColorBrewer)
 load(file = "asia_ex.Rdata")
-webshot::install_phantomjs()
+
 
 ```
 
