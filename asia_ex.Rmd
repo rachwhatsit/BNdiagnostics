@@ -18,6 +18,8 @@ library(DiagrammeR)
 library(rlang)
 library(RColorBrewer)
 load(file = "asia_ex.Rdata")
+webshot::install_phantomjs()
+
 ```
 
 
