@@ -19,14 +19,29 @@ asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #t
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes',which.val=2)#why is this so different for learning and no learning??
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'no')#why is this so different for learning and no learning??
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes')
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes')
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no')
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes')
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no')
+
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','yes'))
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','yes'))
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','no'))
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','no'))
+
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="X", pa.names = "E", pa.val = 'yes')
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="X", pa.names = "E", pa.val = 'no')
+
+df=asia; dag=asia.dag; node.name="T"; pa.names = "A"; pa.val = 'no';which.val=2#why is this so different for learning and no learning??
 
 #try for a node with two parents 
 #E, pa(E) = {T,L}
 
-df=asia; dag=asia.dag; node.name="E"; pa.names = c("T","L"); pa.val = c('no', 'no');which.val=1
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('no', 'no'),which.val=1)
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'no'),which.val=1)
+df=asia; dag=asia.dag; node.name="D"; pa.names = c("B","E"); pa.val = c('yes', 'no');which.val=2
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes', 'no'),which.val=2)
+seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'yes'),which.val=2)
 #NOTE THIS: which.val is which value for the CHILD node, not the parent
 
 
@@ -83,3 +98,8 @@ map(c(3000:4000),function(x) marg.node.monitor(asia.dag,asia,x))
 pmap(list(3000:4000,asia.dag,asia),marg.node.monitor.t)
 
 
+plot(actual.prop, actual.prop, main="title", sub="subtitle",
+     xlab="X-axis label", ylab="y-axix label",
+     xlim=c(min(theor.prop.learn),1), ylim=c(min(theor.prop.learn),1))
+lines(actual.prop,theor.prop,col='blue')
+lines(actual.prop,theor.prop.learn,col='red')
