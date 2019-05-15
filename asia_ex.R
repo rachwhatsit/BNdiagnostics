@@ -19,17 +19,33 @@ asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #t
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'no')#why is this so different for learning and no learning??
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes')
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes')
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no')
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes')
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no')
+df=asia; dag=asia.dag; node.name="T"; pa.names = "A"; pa.val = 'yes'#why is this so different for learning and no learning??
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'no')#why is this so different for learning and no learning??
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes')
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',node.val="yes")
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',node.val="no")
 
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','yes'))
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','yes'))
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','no'))
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','no'))
+
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no')
+
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="yes")
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="no")
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="yes")
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="no")
+
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','yes'))
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','yes'))
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','no'))
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','no'))
+dframe=asia; dag=asia.dag; node.name="D"; pa.names = c("B","E"); pa.val = c('no','no')
+
+
+
+asia %>% filter(B=="no" & E=="no") %>% count(D)
+asia[1:2200,] %>% filter(B=="no" & E=="no") %>% count(D)
+asia[2000:5000,] %>% filter(B=="no" & E=="no") %>% count(D)
+
+asia[2500:5000,] %>% count(B,E)
 
 seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="X", pa.names = "E", pa.val = 'yes')
 seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="X", pa.names = "E", pa.val = 'no')

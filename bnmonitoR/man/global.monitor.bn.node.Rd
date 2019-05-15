@@ -6,14 +6,14 @@
 \alias{global.monitor.graph}
 \title{global monitors and the dependent functions}
 \usage{
-global.monitor.bn.node(node.name, dag, alpha, df)
+global.monitor.bn.node(node.idx, dag, alpha, df)
 
 global.monitor.tbl(dag, alpha, df)
 
 global.monitor.graph(dag, alpha, df)
 }
 \arguments{
-\item{node.name}{name from the dag nodes}
+\item{node.idx}{index from the dag nodes}
 
 \item{dag}{bnlearn object specifying a dag}
 

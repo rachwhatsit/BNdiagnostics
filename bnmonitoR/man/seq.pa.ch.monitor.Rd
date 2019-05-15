@@ -4,12 +4,10 @@
 \alias{seq.pa.ch.monitor}
 \title{the sequential parent child node monitor for Bayesian networks}
 \usage{
-\method{seq}{pa.ch.monitor}(df, dag, node.name, pa.names, pa.val,
-  which.val)
+\method{seq}{pa.ch.monitor}(dframe, dag, node.name, pa.names, pa.val,
+  node.val)
 }
 \arguments{
-\item{df}{base R style data frame}
-
 \item{dag}{bnlearn object with DAG structure, not a fitte dobject}
 
 \item{node.name}{name of child node}
@@ -17,6 +15,8 @@
 \item{pa.names}{names of parents in the network}
 
 \item{pa.val}{names of values to test}
+
+\item{df}{base R style data frame}
 
 \item{which.val}{which level of the value to test}
 }

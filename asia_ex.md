@@ -82,6 +82,12 @@ The global monitor is most useful when comparing between models. For instance, f
 ``` r
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
 model0 <- global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
+```
+
+    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+    ## This warning is displayed once per session.
+
+``` r
 model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
@@ -111,15 +117,7 @@ global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 
 ![](asia_ex_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
-### Parent child monitor
-
-This function computes the predictive probabilities for observing the particular combinations of parent and child values.
-
-``` r
-seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'no'),which.val=1)
-```
-
-![](asia_ex_files/figure-markdown_github/unnamed-chunk-9-1.png)
+At this point, we're curious about what's happening with nodes S, B, and D. To examine that further, we can check the node monitors.
 
 ### Node monitors
 
@@ -141,10 +139,26 @@ node.monitor.tbl(asia.dag,asia)
     ## 7 X     -0.423420308831507 -0.423478541429205
     ## 8 D     -10.4048396933113  -10.3678670531485
 
+This plot, confirms that the overall incidence for Smoking, Bronchitis, and Dysnopea is poorly modelled. Because there is very little difference between the marginal and conditional nodes, the graphs in this example are virtually indistinguishable.We only plot the marginal monitor below.
+
 ``` r
 marg.node.monitor.graph(asia.dag,asia)
 ```
 
-![](asia_ex_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](asia_ex_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
-From this plot, we see that the overall incidence for Smoking, Bronchitis, and Dysnopea are poorly modelled. Because there is very little difference between the marginal and conditional nodes, the graphs in this example are virtually indistinguishable.
+### Parent child monitor
+
+To investigate further into the problem nodes, we can examine how the model is performing for each set of parent and child nodes. Smoking is a root node, so here we'll investigate Bronchitis.
+
+This data is simulated, so these are pretty neat on the whole. We see that the model at first overestimate the cases of Bronchitis for smokers, but quickly learns. This function computes the predictive probabilities for observing the particular combinations of parent and child values.
+
+``` r
+plot1 <- seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="yes")
+plot2 <- seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="no")
+plot3 <- seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="yes")
+plot4 <- seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="no")
+grid.arrange(plot1, plot2, plot3, plot4,ncol=2)
+```
+
+![](asia_ex_files/figure-markdown_github/unnamed-chunk-11-1.png)
