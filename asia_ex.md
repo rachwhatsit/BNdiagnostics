@@ -66,7 +66,7 @@ global.monitor.tbl(asia.dag, alpha = 2, df=asia)
     ## 7 T          -258. 
     ## 8 X          -849.
 
-The darker colors correspond to nodes with a greater contribution to the Bayes Factor.
+The darker colors correspond to nodes with a greater contribution to the Bayes Factor. \#\#\#\# Global Monitors for Model 1
 
 ``` r
 global.monitor.graph(asia.dag, alpha = 2, df=asia)
@@ -77,23 +77,19 @@ global.monitor.graph(asia.dag, alpha = 2, df=asia)
 
 ![](asia_ex_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
-The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole.
+The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole. (Note that the link between S and D is obscure in Model 0 by the layout. I haven't figured a way around this yet.)
 
 ``` r
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
 model0 <- global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
-```
-
-    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
-    ## This warning is displayed once per session.
-
-``` r
 model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
 ```
 
     ## [1] 1.000798
+
+#### Global Monitors for Model 0
 
 ``` r
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)

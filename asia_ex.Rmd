@@ -52,11 +52,13 @@ global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 ```
 
 The darker colors correspond to nodes with a greater contribution to the Bayes Factor. 
+#### Global Monitors for Model 1
 ```{r, cache=TRUE}
 global.monitor.graph(asia.dag, alpha = 2, df=asia)
 ```
+
  
-The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole.
+The global monitor is most useful when comparing between models. For instance, following the example from Cowell 1994, Model 0 compares to Model 1 above. Model 0 below has an addition link between smoking and dyspnoea. The effect of this can be seen in the slightly higher contribution of the Bayes factor to node D. This does not have a significant effect on the model as a whole. (Note that the link between S and D is obscure in Model 0 by the layout. I haven't figured a way around this yet.)
 
 ```{r}
 asia.dag.model0 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
@@ -66,6 +68,7 @@ model1 <- global.monitor.tbl(asia.dag, alpha = 2, df=asia)
 sum(model0$node.scores)/sum(model1$node.scores)#Bayes Factor
 ```
 
+#### Global Monitors for Model 0
 ```{r, cache=TRUE,screenshot.force = TRUE}
 global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
