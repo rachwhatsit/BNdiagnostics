@@ -3,7 +3,7 @@
 #' @param node.idx index from the dag nodes
 #' @param dag bnlearn object specifying a dag 
 #' @param alpha single integer, usually the number of max levels in df
-#' @param df a base R style datafrmae 
+#' @param df a base R style dataframe 
 
 
 #function only works for output from the bnlearn algorithm

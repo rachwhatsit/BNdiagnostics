@@ -6,7 +6,7 @@ asia.bn.fit <- bn.fit(asia.dag, asia)
 
 node.idx = 4;dag = asia.dag;alpha = 2;df = asia
 
-global.monitor.bn.node(node.idx = 7,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node(node.idx = 4,dag = asia.dag,alpha = 2,df = asia)
 global.monitor.bn.node(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
 
 #returns the global monitor for each node 
