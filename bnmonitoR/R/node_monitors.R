@@ -1,23 +1,23 @@
-#' Node Monitors 
-#' @param dag bnlearn object 
-#' @param df dataset 
-#' @param node.name which node  
+#' Node Monitors
+#' @param dag bnlearn object
+#' @param df dataset
+#' @param node.name which node
 
-marg.node.monitor <- function(my.dag,df,node.name){#returns the mth node monitor 
-  node.idx <- which(colnames(df)==node.name)#TODO test that this exists 
-  s <- rep(0,dim(df)[1]) 
-  e <- rep(0,dim(df)[1]) 
-  v <- rep(0,dim(df)[1]) 
+marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
+  node.idx <- which(colnames(df)==node.name)#TODO test that this exists
+  s <- rep(0,dim(df)[1])
+  e <- rep(0,dim(df)[1])
+  v <- rep(0,dim(df)[1])
   z <- rep(0,dim(df)[1])
   for (i in 1:dim(df)[1]){
     df.cut <- df[1:(i-1),]
-    dag.bn.fit <- bn.fit(my.dag, df.cut)
+    dag.bn.fit <- bn.fit(dag, df.cut)
     dag.grain <- as.grain(dag.bn.fit)
     which.val <- as.numeric(df[i,node.idx])
     querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
     p <- unlist(ev[node.name])
     if(any(as.numeric(p)==1) | any(as.numeric(p)==0) ){#| any(as.numeric(p)==1.0) | any(p=="NaN")){
-      print("Poop!")
+      next
     } else {
       s[i] <- -log(p[which.val])
       e[i] <- -sum((p*log(p)))
@@ -25,21 +25,21 @@ marg.node.monitor <- function(my.dag,df,node.name){#returns the mth node monitor
       z[i] <- (cumsum(s)[i]-cumsum(e)[i])/sqrt(cumsum(v)[i])
     }
   }
-  
+
   return(z)
 }
 
 #'@describeIn marg.node.monitor
 marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
-  
+
   num.nodes <- length(nodes(dag))
   dag.bn.fit <- bn.fit(dag, df)
   dag.grain <- as.grain(dag.bn.fit)
   worst.level <- as.numeric(df[dim(df)[1],])
   querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
-  ev[match(names(df),names(ev))] %>% #reordering to match 
+  ev[match(names(df),names(ev))] %>% #reordering to match
     map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
-  
+
   my.colors = brewer.pal(length(names(dag$nodes)),"Greens")
   max.val <- ceiling(max(abs(final.z.score)))
   my.palette <- colorRampPalette(my.colors)(max.val)
@@ -50,10 +50,10 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
                           style="filled",
                           fontcolor="black",
                           fillcolor=node.colors)
-  
+
   from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
   to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
-  
+
   edges <- create_edge_df(from=match(from.nodes,names(df)),
                           to=match(to.nodes,names(df)))
   create_graph(
@@ -63,15 +63,15 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
-cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor 
-    node.idx <- which(colnames(df)==node.name)#TODO test that this exists 
-    s <- rep(0,dim(df)[1]); s.cond <- rep(0,dim(df)[1]) 
-    e <- rep(0,dim(df)[1]); e.cond <- rep(0,dim(df)[1]) 
-    v <- rep(0,dim(df)[1]); v.cond <- rep(0,dim(df)[1]) 
-    z <- rep(0,dim(df)[1]); z.cond <- rep(0,dim(df)[1]) 
+cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
+    node.idx <- which(colnames(df)==node.name)#TODO test that this exists
+    s <- rep(0,dim(df)[1]); s.cond <- rep(0,dim(df)[1])
+    e <- rep(0,dim(df)[1]); e.cond <- rep(0,dim(df)[1])
+    v <- rep(0,dim(df)[1]); v.cond <- rep(0,dim(df)[1])
+    z <- rep(0,dim(df)[1]); z.cond <- rep(0,dim(df)[1])
     for (i in 1:dim(df)[1]){
       df.cut <- df[1:(i-1),]
-      dag.bn.fit <- bn.fit(my.dag, df.cut)
+      dag.bn.fit <- bn.fit(dag, df.cut)
       dag.grain <- as.grain(dag.bn.fit)
       dag.ev <- setEvidence(dag.grain,nodes=colnames(df)[-node.idx],states=as.character(unname(unlist(df[i,-node.idx]))))
       p <- unlist(querygrain(dag.ev, nodes=node.name))
@@ -79,7 +79,7 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
       which.val <- as.numeric(df[i,node.idx])
       if(any(as.numeric(p)==1) | any(as.numeric(p)==0) | any(as.numeric(p)==1.0) | any(p=="NaN") |
          any(as.numeric(p.cond)==1) | any(as.numeric(p.cond)==0) | any(as.numeric(p.cond)==1.0) | any(p.cond=="NaN")){
-        print("Poop!")
+        next
       } else {
         s[i] <- -log(p[which.val])
         e[i] <- -sum((p*log(p)))
@@ -94,20 +94,24 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
     z[which(z==0)] <- NA
     z.cond[which(z.cond==0)] <- NA
     return(cbind(z,z.cond))
-  }
 }
+
 
 #'@describeIn marg.node.monitor
 cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
-  
+
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
   dag.grain <- as.grain(dag.bn.fit)
   worst.level <- as.numeric(df[dim(df)[1],])
-  map(1:length(colnames(df)),pass.ev) %>% 
-    map2(worst.level,standardize) %>% 
+  i_df <- data.frame(
+    x=1:length(colnames(df))
+  )
+  i_df %>%
+    pmap(~pass.ev(.x, df=df, dag.grain=dag.grain)) %>%
+    map2(worst.level,standardize) %>%
     unlist %>% unname-> z.scores
   names(z.scores) <- names(df)
-  
+
   my.colors = brewer.pal(length(names(dag$nodes)),"Greens")
   max.val <- ceiling(max(abs(z.scores)))
   my.palette <- colorRampPalette(my.colors)(max.val)
@@ -118,10 +122,10 @@ cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
                           style="filled",
                           fontcolor="black",
                           fillcolor=node.colors)
-  
+
   from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
   to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
-  
+
   edges <- create_edge_df(from=match(from.nodes,names(df)),
                           to=match(to.nodes,names(df)))
   create_graph(
@@ -136,18 +140,21 @@ node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
   dag.grain <- as.grain(dag.bn.fit)
   worst.level <- as.numeric(df[dim(df)[1],])
-  map(1:length(colnames(df)),pass.ev) %>% 
-    map2(worst.level,standardize) %>% 
+  i_df <- data.frame(
+    x=1:length(colnames(df))
+  )
+  i_df %>% pmap(~pass.ev(.x, df=df, dag.grain=dag.grain)) %>%
+    map2(worst.level,standardize) %>%
     unlist %>% unname-> cond.z.scores
-  
+
   dag.bn.fit.marg <- bn.fit(dag, df)
   dag.grain.marg <- as.grain(dag.bn.fit.marg)
   querygrain(dag.grain.marg, nodes=colnames(df), type="marginal") ->ev
   ev[match(names(df),names(ev))] %>%
     map2_dbl(.y=worst.level,standardize) -> marg.z.score #this returns the vvery last marginal
   marg.z.scores <- marg.z.score[match(names(df),names(marg.z.score))]
-  
+
   result <-as_tibble(cbind(names(df),as.numeric(marg.z.scores),as.numeric(cond.z.scores)))
   names(result) <- c('node','marg.z.score','cond.z.score')
-  return(result)#TODO return the graph as well 
+  return(result)#TODO return the graph as well
 }

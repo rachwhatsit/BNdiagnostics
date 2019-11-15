@@ -20,13 +20,13 @@ global.monitor.tbl(asia.dag.model0, alpha = 2, df=asia)
 global.monitor.graph(asia.dag.model0, alpha = 2, df=asia)
 
 df=asia; dag=asia.dag; node.name="T"; pa.names = "A"; pa.val = 'yes'#why is this so different for learning and no learning??
-seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'no')#why is this so different for learning and no learning??
-seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes')
-seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',node.val="yes")
-seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',node.val="no")
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'no',alpha=2)#why is this so different for learning and no learning??
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="T", pa.names = "A", pa.val = 'yes',alpha=2)
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',alpha=2)
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'yes',alpha=2)
 
 
-seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no')
+seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no',alpha=2)
 
 seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="yes")
 seq.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="no")
@@ -62,17 +62,17 @@ seq.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), p
 
 
 #NODE monitors 
-node.monitor.tbl(asia.dag,asia)
+node.monitor.tbl(dag = asia.dag,df = asia)
 
 #final output table
-marg.node.monitor(asia.dag,asia)
+T.node <- marg.node.monitor(asia.dag,asia,"T")
 #grapical output 
 marg.node.monitor.graph(asia.dag,asia)
 
 #conditional ouptut table
-cond.node.monitor(asia.dag,asia)
+cond.node.monitor(asia.dag,asia, "T")
 #conditional node monitor graph
-cond.node.monitor.graph(asia.dag,asia)
+cond.node.monitor.graph(asia.dag,df=asia)
 
 
 
