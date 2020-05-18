@@ -2,15 +2,40 @@
 % Please edit documentation in R/node_monitors.R
 \name{marg.node.monitor}
 \alias{marg.node.monitor}
+\alias{marg.node.monitor.graph}
+\alias{cond.node.monitor}
+\alias{cond.node.monitor.graph}
+\alias{node.monitor.tbl}
 \title{Node Monitors}
 \usage{
-marg.node.monitor(dag, df)
+marg.node.monitor(dag, df, node.name)
+
+marg.node.monitor.graph(dag, df)
+
+cond.node.monitor(dag, df, node.name)
+
+cond.node.monitor.graph(dag, df)
+
+node.monitor.tbl(dag, df)
 }
 \arguments{
 \item{dag}{bnlearn object}
 
 \item{df}{dataset}
+
+\item{node.name}{which node}
 }
 \description{
 Node Monitors
 }
+\section{Functions}{
+\itemize{
+\item \code{marg.node.monitor.graph}: #;@export
+
+\item \code{cond.node.monitor}: #;@export
+
+\item \code{cond.node.monitor.graph}: #;@export
+
+\item \code{node.monitor.tbl}: #;@export
+}}
+

@@ -1,5 +1,5 @@
 #' global monitors and the dependent functions 
-#' 
+#' @importClassesFrom bnlearn bn.fit
 #' @param node.idx index from the dag nodes
 #' @param dag bnlearn object specifying a dag 
 #' @param alpha single integer, usually the number of max levels in df
@@ -7,6 +7,7 @@
 
 
 #function only works for output from the bnlearn algorithm
+#'@export
 global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the parent set
   num.nodes <- length(dag$nodes)
   pa.val <- map(dag$nodes, `[[`, "parents") #proeprocessing
@@ -32,6 +33,7 @@ global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.b
 }
 
 #'@describeIn  global.monitor.bn.node 
+#'@export
 global.monitor.graph <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)

@@ -19,7 +19,7 @@ global.monitor.graph(dag, alpha, df)
 
 \item{alpha}{single integer, usually the number of max levels in df}
 
-\item{df}{a base R style datafrmae}
+\item{df}{a base R style dataframe}
 }
 \description{
 global monitors and the dependent functions

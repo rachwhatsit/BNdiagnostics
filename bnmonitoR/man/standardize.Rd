@@ -6,9 +6,6 @@
 \usage{
 standardize(vec, j)
 }
-\arguments{
-\item{vec}{}
-}
 \description{
 dependent functions for the node monitors
 }

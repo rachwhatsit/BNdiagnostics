@@ -5,6 +5,7 @@
 #'@param pa.names names of parents in the network
 #'@param pa.val names of values to test
 #'@param which.val which level of the value to test
+#;@export
 seq.pa.ch.monitor <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
   df <- filter(dframe,!!(sym(pa.names))==pa.val)
   nodes <-nodes(dag)
@@ -62,7 +63,7 @@ seq.pa.ch.monitor <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#t
   return(z.learn)
 }
 
-
+#;@export
 pa.ch.graph <-  function(z.learn, pa.names, pa.val){
   t <- 1:length(z.learn[which(z.learn!=0)])
 pa.title <- toString(paste0(pa.names," = ",pa.val))

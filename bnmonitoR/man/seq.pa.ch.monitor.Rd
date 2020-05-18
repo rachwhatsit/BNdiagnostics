@@ -5,7 +5,7 @@
 \title{the sequential parent child node monitor for Bayesian networks}
 \usage{
 \method{seq}{pa.ch.monitor}(dframe, dag, node.name, pa.names, pa.val,
-  node.val)
+  alpha)
 }
 \arguments{
 \item{dag}{bnlearn object with DAG structure, not a fitte dobject}

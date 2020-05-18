@@ -3,6 +3,7 @@
 #' @param df dataset
 #' @param node.name which node
 
+#;@export
 marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
   node.idx <- which(colnames(df)==node.name)#TODO test that this exists
   s <- rep(0,dim(df)[1])
@@ -30,6 +31,7 @@ marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
 }
 
 #'@describeIn marg.node.monitor
+#'#;@export
 marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 
   num.nodes <- length(nodes(dag))
@@ -63,6 +65,7 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
+#'#;@export
 cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
     node.idx <- which(colnames(df)==node.name)#TODO test that this exists
     s <- rep(0,dim(df)[1]); s.cond <- rep(0,dim(df)[1])
@@ -98,6 +101,7 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
 
 
 #'@describeIn marg.node.monitor
+#'#;@export
 cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
@@ -135,6 +139,7 @@ cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
+#'#;@export
 node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
   num.nodes <- length(nodes(dag))
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
