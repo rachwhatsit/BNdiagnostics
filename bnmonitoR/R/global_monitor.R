@@ -4,9 +4,10 @@
 #' @param dag bnlearn object specifying a dag 
 #' @param alpha single integer, usually the number of max levels in df
 #' @param df a base R style dataframe 
-
-
-#function only works for output from the bnlearn algorithm
+#'@importFrom purrr map map_int map_dbl 
+#'@importFrom tibble as_tibble
+#'@importFrom rlang is_empty syms 
+#'@importFrom dplyr if_else  
 #'@export
 global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the parent set
   num.nodes <- length(dag$nodes)
@@ -24,6 +25,9 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
 }  
 
 #'@describeIn  global.monitor.bn.node 
+#'@importFrom purrr map_dbl
+#'@importFrom tibble as_tibble
+#'@export
 global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
@@ -32,7 +36,13 @@ global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.b
   return(result)
 }
 
-#'@describeIn  global.monitor.bn.node 
+#'@describeIn  global.monitor.bn.node
+#'@importFrom RColorBrewer brewer.pal
+#'@importFrom tibble as_tibble
+#'@importFrom purrr map_dbl map
+#'@importFrom grDevices colorRampPalette
+#'@importFrom DiagrammeR create_node_df create_edge_df create_graph render_graph
+#'
 #'@export
 global.monitor.graph <- function(dag, alpha, df){#node.scores output from global.bn
   

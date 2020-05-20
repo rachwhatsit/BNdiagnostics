@@ -5,6 +5,9 @@
 #'@param pa.names names of parents in the network
 #'@param pa.val names of values to test
 #'@param which.val which level of the value to test
+#'@importFrom purrr map_dbl map map_int
+#'@importFrom rlang sym  
+#'@importFrom dplyr if_else  
 #;@export
 seq.pa.ch.monitor <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
   df <- filter(dframe,!!(sym(pa.names))==pa.val)

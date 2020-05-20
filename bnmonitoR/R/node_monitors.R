@@ -3,7 +3,9 @@
 #' @param df dataset
 #' @param node.name which node
 
-#;@export
+#'@importFrom bnlearn bn.fit as.grain
+#'@importFrom gRain querygrain 
+#'@export
 marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
   node.idx <- which(colnames(df)==node.name)#TODO test that this exists
   s <- rep(0,dim(df)[1])
@@ -12,10 +14,10 @@ marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
   z <- rep(0,dim(df)[1])
   for (i in 1:dim(df)[1]){
     df.cut <- df[1:(i-1),]
-    dag.bn.fit <- bn.fit(dag, df.cut)
-    dag.grain <- as.grain(dag.bn.fit)
+    dag.bn.fit <- bnlearn::bn.fit(dag, df.cut)
+    dag.grain <- bnlearn::as.grain(dag.bn.fit)
     which.val <- as.numeric(df[i,node.idx])
-    querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
+    gRain::querygrain(dag.grain, nodes=colnames(df), type="marginal") ->ev
     p <- unlist(ev[node.name])
     if(any(as.numeric(p)==1) | any(as.numeric(p)==0) ){#| any(as.numeric(p)==1.0) | any(p=="NaN")){
       next
@@ -29,7 +31,9 @@ marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
 
   return(z)
 }
-
+#'@importFrom bnlearn bn.fit as.grain
+#'@importFrom gRain querygrain 
+#'@importFrom purrr map2_dbl
 #'@describeIn marg.node.monitor
 #'#;@export
 marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
@@ -42,9 +46,9 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
   ev[match(names(df),names(ev))] %>% #reordering to match
     map2_dbl(.y=worst.level,standardize) -> final.z.score #this returns the vvery last marginal
 
-  my.colors = brewer.pal(length(names(dag$nodes)),"Greens")
+  my.colors = RColorBrewer::brewer.pal(length(names(dag$nodes)),"Greens")
   max.val <- ceiling(max(abs(final.z.score)))
-  my.palette <- colorRampPalette(my.colors)(max.val)
+  my.palette <- grDevices::colorRampPalette(my.colors)(max.val)
   node.colors <- my.palette[floor(abs(final.z.score))+1]
   nodes <- create_node_df(n=length(names(df)),
                           type= names(df),
@@ -53,8 +57,8 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
                           fontcolor="black",
                           fillcolor=node.colors)
 
-  from.nodes <- map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
-  to.nodes <-map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
+  from.nodes <- purrr::map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
+  to.nodes <-purrr:map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
 
   edges <- create_edge_df(from=match(from.nodes,names(df)),
                           to=match(to.nodes,names(df)))
@@ -74,11 +78,11 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
     z <- rep(0,dim(df)[1]); z.cond <- rep(0,dim(df)[1])
     for (i in 1:dim(df)[1]){
       df.cut <- df[1:(i-1),]
-      dag.bn.fit <- bn.fit(dag, df.cut)
-      dag.grain <- as.grain(dag.bn.fit)
-      dag.ev <- setEvidence(dag.grain,nodes=colnames(df)[-node.idx],states=as.character(unname(unlist(df[i,-node.idx]))))
-      p <- unlist(querygrain(dag.ev, nodes=node.name))
-      p.cond <- unlist(querygrain(dag.grain,nodes=node.name))
+      dag.bn.fit <- bnlearn::bn.fit(dag, df.cut)
+      dag.grain <- bnlearn::as.grain(dag.bn.fit)
+      dag.ev <- gRain::setEvidence(dag.grain,nodes=colnames(df)[-node.idx],states=as.character(unname(unlist(df[i,-node.idx]))))
+      p <- unlist(gRain::querygrain(dag.ev, nodes=node.name))
+      p.cond <- unlist(gRain::querygrain(dag.grain,nodes=node.name))
       which.val <- as.numeric(df[i,node.idx])
       if(any(as.numeric(p)==1) | any(as.numeric(p)==0) | any(as.numeric(p)==1.0) | any(p=="NaN") |
          any(as.numeric(p.cond)==1) | any(as.numeric(p.cond)==0) | any(as.numeric(p.cond)==1.0) | any(p.cond=="NaN")){
@@ -101,9 +105,13 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
 
 
 #'@describeIn marg.node.monitor
-#'#;@export
+#'@importFrom bnlearn bn.fit as.grain
+#'@importFrom purrr pmap map2
+#'@importFrom RColorBrewer brewer.pal
+#'@importFrom grDevices colorRampPalette
+#'@importFrom DiagrammeR create_node_df create_edge_df create_graph render_graph
+#'@export
 cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
-
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
   dag.grain <- as.grain(dag.bn.fit)
   worst.level <- as.numeric(df[dim(df)[1],])
@@ -139,7 +147,8 @@ cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
-#'#;@export
+#'@importFrom tibble as_tibble
+#'@export
 node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
   num.nodes <- length(nodes(dag))
   dag.bn.fit <- bn.fit(dag, df[1:(dim(df)[1]-1),])
