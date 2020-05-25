@@ -1,26 +1,26 @@
 #' the sequential parent child node monitor for Bayesian networks
-#'@param df base R style data frame
+#'@param dframe base R style data frame
 #'@param dag bnlearn object with DAG structure, not a fitte dobject
 #'@param node.name name of child node
 #'@param pa.names names of parents in the network
 #'@param pa.val names of values to test
-#'@param which.val which level of the value to test
+#'@param alpha prior
 #'@importFrom purrr map_dbl map map_int
 #'@importFrom rlang sym  
 #'@importFrom dplyr if_else  
 #;@export
-seq.pa.ch.monitor <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
+sqntl.pa.ch.monitor() <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
   df <- filter(dframe,!!(sym(pa.names))==pa.val)
   nodes <-nodes(dag)
   num.nodes <- length(dag$nodes)
   num.ch <- map(dag$nodes, `[[`, "children")  %>% map_int(length)
   num.values <- map_int(1:num.nodes, function(i){length(unique(dframe[,i]))})
-  node.idx <- which(colnames(df)==node.name)#TODO test that this exists
+  node.idx <- which(colnames(df)==node.name)
   alpha.vec <- rep(alpha/num.values[node.idx], num.values[node.idx])
   #alpha.vec <- c(0.8,0.2)
   new.alpha <- alpha.vec #this is the one with learning
   counts <- rep(0,num.values[node.idx])
-  idx <- which(all(df[,which(colnames(df) %in% pa.names)]==pa.val))
+  #idx <- which(all(df[,which(colnames(df) %in% pa.names)]==pa.val))
 
   #c <- num.values[node.idx]
   s <- rep(0,dim(df)[1]) ;s.learn <- rep(0,dim(df)[1])
