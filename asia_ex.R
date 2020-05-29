@@ -8,7 +8,10 @@ node.idx = 4;dag = asia.dag;alpha = 2;df = asia
 
 global.monitor.bn.node(node.idx = 4,dag = asia.dag,alpha = 2,df = asia)
 global.monitor.bn.node(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
-
+test<-global.monitor.bn.node.t(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
+test2 <- test
+test2[-1] -> test2
+plot(log(test2/test[-dim(df)[1]]))
 #returns the global monitor for each node 
 
 

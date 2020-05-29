@@ -31,14 +31,12 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
 global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
-  result <-as_tibble(cbind(names(dag$nodes),node.scores))
-  result$node.scores <- as.numeric(result$node.scores)#return this result for each node 
+  result <-as.data.frame(cbind(names(dag$nodes),as.numeric(node.scores)))
   return(result)
 }
 
 #'@describeIn  global.monitor.bn.node
 #'@importFrom RColorBrewer brewer.pal
-#'@importFrom tibble as_tibble
 #'@importFrom purrr map_dbl map
 #'@importFrom grDevices colorRampPalette
 #'@importFrom DiagrammeR create_node_df create_edge_df create_graph render_graph
@@ -47,7 +45,7 @@ global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.b
 global.monitor.graph <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
-  result <-as_tibble(cbind(names(dag$nodes),node.scores))
+  result <-data.frame(cbind(names(dag$nodes),node.scores))
   result$node.scores <- as.numeric(result$node.scores)#return this result for each node 
   
   my.colors = brewer.pal(length(names(dag$nodes)),"Blues")
