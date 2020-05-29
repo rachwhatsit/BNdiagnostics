@@ -28,7 +28,9 @@ marg.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
       z[i] <- (cumsum(s)[i]-cumsum(e)[i])/sqrt(cumsum(v)[i])
     }
   }
-
+  plot(z)
+  title("Marginal Node Monitor")
+  xlab("Index")
   return(z)
 }
 #'@importFrom bnlearn bn.fit as.grain
@@ -58,7 +60,7 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
                           fillcolor=node.colors)
 
   from.nodes <- purrr::map(dag$nodes, `[[`, "parents") %>% unlist %>% unname
-  to.nodes <-purrr:map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
+  to.nodes <-purrr::map(dag$nodes, `[[`, "parents") %>% unlist %>% names %>% substr(1,1)
 
   edges <- create_edge_df(from=match(from.nodes,names(df)),
                           to=match(to.nodes,names(df)))
@@ -69,9 +71,9 @@ marg.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
-#'#;@export
+#'@export
 cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
-    node.idx <- which(colnames(df)==node.name)#TODO test that this exists
+    node.idx <- which(colnames(df)==node.name)#
     s <- rep(0,dim(df)[1]); s.cond <- rep(0,dim(df)[1])
     e <- rep(0,dim(df)[1]); e.cond <- rep(0,dim(df)[1])
     v <- rep(0,dim(df)[1]); v.cond <- rep(0,dim(df)[1])
@@ -82,25 +84,29 @@ cond.node.monitor <- function(dag,df,node.name){#returns the mth node monitor
       dag.grain <- bnlearn::as.grain(dag.bn.fit)
       dag.ev <- gRain::setEvidence(dag.grain,nodes=colnames(df)[-node.idx],states=as.character(unname(unlist(df[i,-node.idx]))))
       p <- unlist(gRain::querygrain(dag.ev, nodes=node.name))
-      p.cond <- unlist(gRain::querygrain(dag.grain,nodes=node.name))
+      #p.cond <- unlist(gRain::querygrain(dag.grain,nodes=node.name))
       which.val <- as.numeric(df[i,node.idx])
-      if(any(as.numeric(p)==1) | any(as.numeric(p)==0) | any(as.numeric(p)==1.0) | any(p=="NaN") |
-         any(as.numeric(p.cond)==1) | any(as.numeric(p.cond)==0) | any(as.numeric(p.cond)==1.0) | any(p.cond=="NaN")){
+      if(any(as.numeric(p)==1) | any(as.numeric(p)==0) | any(as.numeric(p)==1.0) | any(p=="NaN")){# |
+         #any(as.numeric(p.cond)==1) | any(as.numeric(p.cond)==0) | any(as.numeric(p.cond)==1.0) | any(p.cond=="NaN")){
         next
       } else {
         s[i] <- -log(p[which.val])
         e[i] <- -sum((p*log(p)))
         v[i] <- (sum(p*log(p)^2)) -e[i]^2
         z[i] <- (cumsum(s)[i]-cumsum(e)[i])/sqrt(cumsum(v)[i])
-        s.cond[i] <- -log(p.cond[which.val])
-        e.cond[i] <- -sum((p.cond*log(p.cond)))
-        v.cond[i] <- (sum(p.cond*log(p.cond)^2)) -e.cond[i]^2
-        z.cond[i] <- (cumsum(s.cond)[i]-cumsum(e.cond)[i])/sqrt(cumsum(v.cond)[i])
+        #s.cond[i] <- -log(p.cond[which.val])
+        #e.cond[i] <- -sum((p.cond*log(p.cond)))
+        #z.cond[i] <- (cumsum(s.cond)[i]-cumsum(e.cond)[i])/sqrt(cumsum(v.cond)[i])
+        #v.cond[i] <- (sum(p.cond*log(p.cond)^2)) -e.cond[i]^2
       }
     }
     z[which(z==0)] <- NA
-    z.cond[which(z.cond==0)] <- NA
-    return(cbind(z,z.cond))
+    #z.cond[which(z.cond==0)] <- NA
+    #return(cbind(z,z.cond))
+    plot(z)
+    title("Conditional Node Monitor")
+    xlab("Index")
+    return(z)
 }
 
 
@@ -147,7 +153,7 @@ cond.node.monitor.graph <- function(dag, df){#node.scores output from global.bn
 }
 
 #'@describeIn marg.node.monitor
-#'@importFrom tibble as_tibble
+#'@importFrom tibble new_tibble
 #'@export
 node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
   num.nodes <- length(nodes(dag))
@@ -168,7 +174,7 @@ node.monitor.tbl <- function(dag, df){#node.scores output from global.bn
     map2_dbl(.y=worst.level,standardize) -> marg.z.score #this returns the vvery last marginal
   marg.z.scores <- marg.z.score[match(names(df),names(marg.z.score))]
 
-  result <-as_tibble(cbind(names(df),as.numeric(marg.z.scores),as.numeric(cond.z.scores)))
+  result <-data.frame(cbind(names(df),as.numeric(marg.z.scores),as.numeric(cond.z.scores)))
   names(result) <- c('node','marg.z.score','cond.z.score')
-  return(result)#TODO return the graph as well
+  return(result)#
 }

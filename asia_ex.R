@@ -60,7 +60,8 @@ sqntl.pa.ch.monitor(df=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"),
 sqntl.pa.ch.monitor(df=asia, dag=asia.dag, node.name="E", pa.names = c("T","L"), pa.val = c('yes', 'yes'),which.val=2)
 #NOTE THIS: which.val is which value for the CHILD node, not the parent
 
-
+marg.node.monitor(asia.dag,asia[1:200,],"T")->test
+cond.node.monitor(asia.dag,asia[1:200,],"T")->test
 #NODE monitors 
 node.monitor.tbl(dag = asia.dag,df = asia)
 
@@ -68,9 +69,9 @@ node.monitor.tbl(dag = asia.dag,df = asia)
 T.node <- marg.node.monitor(asia.dag,asia,"T")
 #grapical output 
 marg.node.monitor.graph(asia.dag,asia)
-
+cond.node.monitor.graph(asia.dag,asia)
 #conditional ouptut table
-cond.node.monitor(asia.dag,asia, "T")
+test<-cond.node.monitor(asia.dag,asia[1:500,], "T")
 #conditional node monitor graph
 cond.node.monitor.graph(asia.dag,df=asia)
 
