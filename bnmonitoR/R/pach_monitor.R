@@ -9,7 +9,7 @@
 #'@importFrom rlang sym  
 #'@importFrom dplyr if_else  
 #;@export
-sqntl.pa.ch.monitor() <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
+sqntl.pa.ch.monitor <- function(dframe, dag, node.name, pa.names, pa.val,alpha){#takes input from bnlearn
   df <- filter(dframe,!!(sym(pa.names))==pa.val)
   nodes <-nodes(dag)
   num.nodes <- length(dag$nodes)

@@ -3,14 +3,11 @@
 \name{marg.node.monitor}
 \alias{marg.node.monitor}
 \alias{marg.node.monitor.graph}
-\alias{cond.node.monitor}
 \title{Node Monitors}
 \usage{
 marg.node.monitor(dag, df, node.name)
 
 marg.node.monitor.graph(dag, df)
-
-cond.node.monitor(dag, df, node.name)
 }
 \arguments{
 \item{dag}{bnlearn object}
@@ -25,7 +22,5 @@ Node Monitors
 \section{Functions}{
 \itemize{
 \item \code{marg.node.monitor.graph}: #;@export
-
-\item \code{cond.node.monitor}: #;@export
 }}
 

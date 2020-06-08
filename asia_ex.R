@@ -1,12 +1,63 @@
-
+data(asia)
 asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
 bnlearn::graphviz.plot(asia.dag)
 
 asia.bn.fit <- bn.fit(asia.dag, asia)
 
-node.idx = 4;dag = asia.dag;alpha = 2;df = asia
 
+#can use the global monitors to compare models
+asia.dag.1 = model2network("[A][S][T|A][L|S][B|S][E|T:L][X|E][D|B:E:S]") #this is the candidate model from pg 240
+bnlearn::graphviz.plot(asia.dag.1) #has an additional dependence between S and D
+global.monitor.tbl(asia.dag, alpha = 2, df=asia)
+global.monitor.tbl(asia.dag.1, alpha = 2, df=asia)
+#get a higher penalty from alternative model for D
+global.monitor.graph(asia.dag,2,asia)
+global.monitor.graph(asia.dag.1,2,asia)
+#examine sequential contributions to log likelihood for D for each model
+global.sqtl.1 <- global.monitor.bn.node.t(3,asia.dag.1,2,asia)
+global.sqtl.0 <- global.monitor.bn.node.t(3,asia.dag,2,asia)
+
+marg.B.0 <-marg.node.monitor(dag = asia.dag,df = asia,node.name = "D")
+marg.B.1 <-marg.node.monitor(dag = asia.dag.1,df = asia,node.name = "D")
+
+global.monitor.tbl(asia.dag,2,df=asia)
+nodes(asia.dag)
+#looks like smoking and bronchitis are main contributors 
+#first for smoking
+global.monitor.bn.node(node.idx = 6,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node.t(node.idx = 6,dag = asia.dag,alpha = 2,df = asia)
+#no wild outliers for the data 
+#and then for bronchitis 
+global.monitor.bn.node.t(node.idx = 2,dag = asia.dag,alpha = 2,df = asia)
+#ditto this one... 
+
+#proceed to node monitors 
+marg.B <- marg.node.monitor(asia.dag,asia,"B")
+plot(marg.B)
+#we're wildly overestimating bronchitis?
+#getting z score approaching 3
+marg.B.t <- marg.node.monitor.t(asia.dag,asia,"B")#says poop for NaNs
+marg.S <- marg.node.monitor(asia.dag,asia,"S")
+plot(marg.S)
+#similarly misfiring on S
+
+#smoking is a root node, so there's not much we can do there... 
+#what about bronchitis?
+sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',alpha = 2)
+#predicting pretty well for smokers
+sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',alpha = 2)
+#having a hard time modelling non-smokers
+#underestimating the number of nonsmokers that have broonchitis in the dataset 
+#so what do we do here? have a context-specific conditional independence?
+#there is some other node that we need to accurately model bronchitis in the dataset
+
+marg.S.t <- marg.node.monitor.t(asia.dag,asia,"S")
+
+
+
+#this gives the overall log likelihood useful for comparing contribution of each node in models
 global.monitor.bn.node(node.idx = 4,dag = asia.dag,alpha = 2,df = asia)
+global.monitor.bn.node.t(node.idx = 4,dag = asia.dag,alpha = 2,df = asia)
 global.monitor.bn.node(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
 test<-global.monitor.bn.node.t(node.idx = 8,dag = asia.dag,alpha = 2,df = asia)
 test2 <- test
@@ -31,10 +82,6 @@ sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa
 
 sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="L", pa.names = "S", pa.val = 'no',alpha=2)
 
-sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="yes")
-sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'yes',node.val="no")
-sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="yes")
-sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="B", pa.names = "S", pa.val = 'no',node.val="no")
 
 sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('yes','yes'))
 sqntl.pa.ch.monitor(dframe=asia, dag=asia.dag, node.name="D", pa.names = c("B","E"), pa.val = c('no','yes'))

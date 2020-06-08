@@ -5,15 +5,15 @@
 #' @param alpha single integer, usually the number of max levels in df
 #' @param df a base R style dataframe 
 #'@importFrom purrr map map_int map_dbl 
-#'@importFrom tibble as_tibble
-#'@importFrom rlang is_empty syms 
-#'@importFrom dplyr if_else  
+#'@importFrom tidyr complete 
+#'@import rlang 
+#'@import dplyr   
 #'@export
 global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the parent set
   num.nodes <- length(dag$nodes)
-  pa.val <- map(dag$nodes, `[[`, "parents") #proeprocessing
-  num.values <- map_int(1:num.nodes, function(i){length(unique(df[,i]))})
-  num.pa.combo <- if_else(is_empty(pa.val[node.idx]),1,prod(num.values[which(colnames(df) %in% unlist(pa.val[node.idx]))]))
+  pa.val <- purrr::map(dag$nodes, `[[`, "parents") #proeprocessing
+  num.values <- purrr::map_int(1:num.nodes, function(i){length(unique(df[,i]))})
+  num.pa.combo <- dplyr::if_else(rlang::is_empty(pa.val[node.idx]),1,prod(num.values[which(colnames(df) %in% unlist(pa.val[node.idx]))]))
   
   
   alpha.vec <<- rep(alpha/num.values[node.idx], num.values[node.idx]) 
@@ -24,9 +24,32 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
   return(score)#returns global and pach monitor  
 }  
 
+global.monitor.bn.node.t <- function(node.idx,dag,alpha,df){#j is the index of the parent set
+  num.nodes <- length(dag$nodes)
+  pa.val <- map(dag$nodes, `[[`, "parents") #proeprocessing
+  num.values <- map_int(1:num.nodes, function(i){length(unique(df[,i]))})
+  num.pa.combo <- if_else(is_empty(pa.val[node.idx]),1,prod(num.values[which(colnames(df) %in% unlist(pa.val[node.idx]))]))
+  
+  
+  alpha.vec <<- rep(alpha/num.values[node.idx], num.values[node.idx]) 
+  pa.names <-c(unlist(pa.val[node.idx] ,use.names = FALSE), names(pa.val)[[node.idx]])
+  score <- rep(0,dim(df)[1])
+  for(i in 1:dim(df)[1]){
+    df.cut <- df[1:i,]
+    df.cut %>% count(!!!(syms(pa.names))) %>% complete(!!!(syms(pa.names)),fill = list(n = 0)) %>% pull(n) ->> counts.vec 
+    map_dbl(1:num.pa.combo, ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
+    score[i] <- unlist(sum(scores.vec))
+  }
+  score2 <- score
+  score2[-1] -> score2
+  plot(log(score2/score[-dim(df)[1]]))
+  title("Global Monitor")
+  return(score)#returns global and pach monitor  
+}  
+
+
 #'@describeIn  global.monitor.bn.node 
 #'@importFrom purrr map_dbl
-#'@importFrom tibble as_tibble
 #'@export
 global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.bn
   

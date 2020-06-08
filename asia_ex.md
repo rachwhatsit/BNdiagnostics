@@ -8,17 +8,16 @@ Prequential diagnostic monitors for Bayesian Networks
 
 Package exists to check the goodness of fit for a BN model. Package is designed to interface with objects of class bnlearn.
 
-``` r
+Load the package from github.
+``` {r eval=FALSE}
 devtools::install_github('bnmonitoR','rachwhatsit')
 ```
-
-Load the package from github.
 
 ``` r
 library(bnmonitoR)
 ```
 
-We will examine the dataset from the bnlearn package from Lauritzen. Details of the variables (nodes) can be found in the documentation for bnlearn.
+We will examine the dataset from the ```bnlearn``` package from Lauritzen. Details of the variables (nodes) can be found in the documentation for bnlearn.
 
 ``` r
 data(asia)
@@ -35,38 +34,26 @@ summary(asia)
 We will specify the structure of the model here. This corresponds to the candidate model from Cowell et al. pg 240
 
 ``` r
-asia.dag = model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
-bnlearn::graphviz.plot(asia.dag) 
+asia.dag <- model2network("[A][S][T|A][L|S][B|S][D|B:E][E|T:L][X|E]") #this is the candidate model from pg 240
+bnlearn:::graphviz.plot(asia.dag) 
 ```
 
-    ## Loading required namespace: Rgraphviz
 
-![](asia_ex_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ### Global monitor
 
-The global monitor is equivalent to the Bayes Factor and offers a good assessment of the model as a whole.
+The global monitor is equivalent to the Bayes Factor and offers a good assessment of the model as a whole. 
+We can assess the log likelihood contribution from each of the nodes and determine which nodes contribute the most to the global monitor.
+global.monitor.graph provides a quick visual for the entire network. 
+The darker the color, the more substantial the contribution of that node to the log likelihood.
 
 ``` r
 global.monitor.tbl(asia.dag, alpha = 2, df=asia)
+global.monitor.graph(asia.dag, alpha = 2, df=asia)
 ```
 
-    ## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
-    ## This warning is displayed once per session.
-
-    ## # A tibble: 8 x 2
-    ##   V1    node.scores
-    ##   <chr>       <dbl>
-    ## 1 A          -248. 
-    ## 2 B         -3021. 
-    ## 3 D         -2144. 
-    ## 4 E           -19.6
-    ## 5 L         -1100. 
-    ## 6 S         -3470. 
-    ## 7 T          -258. 
-    ## 8 X          -849.
-
-The darker colors correspond to nodes with a greater contribution to the Bayes Factor. \#\#\#\# Global Monitors for Model 1
+    
+ \#\#\#\# Global Monitors for Model 1
 
 ``` r
 global.monitor.graph(asia.dag, alpha = 2, df=asia)
