@@ -20,7 +20,7 @@ global.monitor.bn.node <- function(node.idx,dag,alpha,df){#j is the index of the
   pa.names <-c(unlist(pa.val[node.idx] ,use.names = FALSE), names(pa.val)[[node.idx]])
   df %>% count(!!!(syms(pa.names))) %>% complete(!!!(syms(pa.names)),fill = list(n = 0)) %>% pull(n) ->> counts.vec 
   map_dbl(1:num.pa.combo, ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
-  score <- unlist(sum(scores.vec))
+  score <- unlist(-sum(scores.vec))
   return(score)#returns global and pach monitor  
 }  
 
@@ -38,7 +38,7 @@ global.monitor.bn.node.t <- function(node.idx,dag,alpha,df){#j is the index of t
     df.cut <- df[1:i,]
     df.cut %>% count(!!!(syms(pa.names))) %>% complete(!!!(syms(pa.names)),fill = list(n = 0)) %>% pull(n) ->> counts.vec 
     map_dbl(1:num.pa.combo, ~get.pa.combo.score(.x, counts.vec, alpha.vec))->scores.vec 
-    score[i] <- unlist(sum(scores.vec))
+    score[i] <- unlist(-sum(scores.vec))
   }
   score2 <- score
   score2[-1] -> score2
@@ -54,7 +54,7 @@ global.monitor.bn.node.t <- function(node.idx,dag,alpha,df){#j is the index of t
 global.monitor.tbl <- function(dag, alpha, df){#node.scores output from global.bn
   
   node.scores <- map_dbl(.x=1:length(dag$nodes), dag, alpha, df, .f= global.monitor.bn.node)
-  result <-as.data.frame(cbind(names(dag$nodes),as.numeric(node.scores)))
+  result <-as.data.frame(cbind(names(dag$nodes),as.numeric(-node.scores)))
   return(result)
 }
 
